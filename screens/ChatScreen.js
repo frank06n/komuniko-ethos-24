@@ -3,7 +3,8 @@ import { View, ScrollView, TextInput, StyleSheet } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import { getChatData } from '../test_util/ProvideData';
 
-
+//change this
+throw new Error('This page is not changed accordingly yet');
 
 const ChatScreen = ({ route }) => {
     const { name } = route.params;
@@ -11,6 +12,7 @@ const ChatScreen = ({ route }) => {
     const [newMessage, setNewMessage] = useState('');
 
     const isGroupChat = ['Family Group', 'Friends Group', 'Work Group'].includes(name);
+    const isSender = msg.sender === 'Me';
 
     const sendMessage = () => {
         setMessages([...messages, { id: String(messages.length + 1), text: newMessage, sender: 'Me' }]);
@@ -21,8 +23,8 @@ const ChatScreen = ({ route }) => {
         <View style={styles.container}>
             <ScrollView style={styles.messagesContainer}>
                 {messages.map((msg) => (
-                    <View key={msg.id} style={msg.sender === 'Me' ? styles.myMessage : styles.otherMessage}>
-                        {isGroupChat && msg.sender !== 'Me' && <Text style={styles.senderName}>{msg.sender}</Text>}
+                    <View key={msg.id} style={isSender ? styles.myMessage : styles.otherMessage}>
+                        {isGroupChat && !isSender && <Text style={styles.senderName}>{msg.sender}</Text>}
                         <Text>{msg.text}</Text>
                     </View>
                 ))}
