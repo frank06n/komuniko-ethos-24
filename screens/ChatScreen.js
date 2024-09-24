@@ -1,33 +1,46 @@
 import React, { useState } from 'react';
 import { View, ScrollView, TextInput, StyleSheet } from 'react-native';
 import { Text, Button } from 'react-native-paper';
-import { getChatData } from '../test_util/ProvideData';
-
-//change this
-throw new Error('This page is not changed accordingly yet');
+import { getGroupChat, getPersonalChatPair, getUserData } from '../test_util/ProvideData';
+import MessageItem from '../components/MessageItem';
 
 const ChatScreen = ({ route }) => {
-    const { name } = route.params;
-    const [messages, setMessages] = useState(getChatData(name) || []);
+    const { type, unique_id, currUserId } = route.params;
+
+    const isGroup = type === 'GROUP';
+    const chatData = isGroup ? getGroupChat(unique_id) : getPersonalChatPair(unique_id);
+    let lastMessageId = chatData.messages[chatData.messages.length - 1].message_id;
+
+    const usersData = {}
+    if (isGroup) {
+        for (let id of chatData.users) {
+            usersData[id] = getUserData(id);
+        }
+    }
+
+
+    const [messages, setMessages] = useState(chatData.messages || []);
     const [newMessage, setNewMessage] = useState('');
 
-    const isGroupChat = ['Family Group', 'Friends Group', 'Work Group'].includes(name);
-    const isSender = msg.sender === 'Me';
 
     const sendMessage = () => {
-        setMessages([...messages, { id: String(messages.length + 1), text: newMessage, sender: 'Me' }]);
+        lastMessageId += 1;
+        setMessages([...messages, {
+            "message_id": lastMessageId,
+            "text_content": newMessage,
+            "sender": currUserId,
+            "timestamp": new Date().toISOString()
+        }]);
+
         setNewMessage('');
     };
 
     return (
         <View style={styles.container}>
             <ScrollView style={styles.messagesContainer}>
-                {messages.map((msg) => (
-                    <View key={msg.id} style={isSender ? styles.myMessage : styles.otherMessage}>
-                        {isGroupChat && !isSender && <Text style={styles.senderName}>{msg.sender}</Text>}
-                        <Text>{msg.text}</Text>
-                    </View>
-                ))}
+                {messages.map((msg) =>
+                    <MessageItem message={msg} isGroup={isGroup} currentUser={currUserId} users={usersData} />
+                )}
             </ScrollView>
             <View style={styles.inputContainer}>
                 <TextInput
@@ -46,7 +59,7 @@ const ChatScreen = ({ route }) => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'space-between' },
-    messagesContainer: { padding: 16, flex: 1 },
+    messagesContainer: { flex: 1 },
     myMessage: { alignSelf: 'flex-end', backgroundColor: '#DCF8C6', padding: 10, borderRadius: 10, marginVertical: 5 },
     otherMessage: { alignSelf: 'flex-start', backgroundColor: '#ECECEC', padding: 10, borderRadius: 10, marginVertical: 5 },
     inputContainer: { flexDirection: 'row', padding: 10, borderTopWidth: 1, borderColor: '#DDD' },

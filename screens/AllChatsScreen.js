@@ -61,7 +61,7 @@ const renderListItem = (item, navigation) => {
         descriptionNumberOfLines={1} // Truncate to 1 line
         style={styles.listItem}
         left={() => <Avatar.Image size={48} source={{ uri: item.profilepic }} />}
-        onPress={() => navigation.navigate('Chat', { type: item.type, unique_id: item.unique_id })}
+        onPress={() => navigation.navigate('Chat', { type: item.type, unique_id: item.unique_id, currUserId: currUserId })}
     />
 };
 
