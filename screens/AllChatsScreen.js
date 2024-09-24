@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Avatar, List, Text } from 'react-native-paper';
+import { Avatar, List, Text, Button, Menu, IconButton } from 'react-native-paper';
 import { getUserData, getPersonalChatPairLastMessage, getGroupChatData } from '../test_util/ProvideData';
 
 const currUserId = 0;
@@ -61,11 +61,44 @@ const renderListItem = (item, navigation) => {
         descriptionNumberOfLines={1} // Truncate to 1 line
         style={styles.listItem}
         left={() => <Avatar.Image size={48} source={{ uri: item.profilepic }} />}
-        onPress={() => navigation.navigate('Chat', { type: item.type, unique_id: item.unique_id, currUserId: currUserId })}
+        onPress={() => navigation.navigate('Chat', {
+            type: item.type,
+            unique_id: item.unique_id,
+            currUserId: currUserId,
+            displayname: item.displayname,
+            profilepic: item.profilepic
+        })}
     />
 };
 
+
+
+
+
 const AllChatsScreen = ({ navigation }) => {
+
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const openMenu = () => setMenuVisible(true);
+    const closeMenu = () => setMenuVisible(false);
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Menu
+                    visible={menuVisible}
+                    onDismiss={closeMenu}
+                    anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
+                    anchorPosition='bottom'
+                >
+                    <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Option 1" />
+                    <Menu.Item onPress={() => { /* Handle option 2 */ }} title="Option 2" />
+                    <Menu.Item onPress={() => { /* Handle option 3 */ }} title="Option 3" />
+                </Menu>
+            ),
+        });
+    }, [navigation, menuVisible]);
+
     return (
         <FlatList
             style={styles.chatsList}

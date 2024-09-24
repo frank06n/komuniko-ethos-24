@@ -13,7 +13,7 @@ export default function App() {
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="AllChats">
                     <Stack.Screen name="AllChats" component={AllChatsScreen} options={{ title: 'Chats' }} />
-                    <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({ title: route.params.name })} />
+                    <Stack.Screen name="Chat" component={ChatScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
         </PaperProvider>

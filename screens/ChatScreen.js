@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, ScrollView, TextInput, StyleSheet } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+import { Avatar, Text, Button, Menu, IconButton } from 'react-native-paper';
 import { getGroupChat, getPersonalChatPair, getUserData } from '../test_util/ProvideData';
 import MessageItem from '../components/MessageItem';
+import { useNavigation } from '@react-navigation/native';
 
-const ChatScreen = ({ route }) => {
-    const { type, unique_id, currUserId } = route.params;
+const ChatScreen = ({ navigation, route }) => {
+    const { type, unique_id, currUserId, displayname, profilepic } = route.params;
 
     const isGroup = type === 'GROUP';
     const chatData = isGroup ? getGroupChat(unique_id) : getPersonalChatPair(unique_id);
@@ -17,10 +18,45 @@ const ChatScreen = ({ route }) => {
             usersData[id] = getUserData(id);
         }
     }
-
-
     const [messages, setMessages] = useState(chatData.messages || []);
     const [newMessage, setNewMessage] = useState('');
+
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const openMenu = () => setMenuVisible(true);
+    const closeMenu = () => setMenuVisible(false);
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            title: displayname,
+            headerLeft: () => (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <IconButton
+                        icon="arrow-left"
+                        size={24}
+                        style={{ margin: 0 }}
+                        onPress={() => navigation.goBack()}
+                    />
+                    <Avatar.Image
+                        size={40}
+                        source={{ uri: profilepic }} // Replace with your avatar URL
+                    />
+                </View>
+            ),
+            headerRight: () => (
+                <Menu
+                    visible={menuVisible}
+                    onDismiss={closeMenu}
+                    anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
+                    anchorPosition='bottom'
+                >
+                    <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Option 1" />
+                    <Menu.Item onPress={() => { /* Handle option 2 */ }} title="Option 2" />
+                    <Menu.Item onPress={() => { /* Handle option 3 */ }} title="Option 3" />
+                </Menu>
+            ),
+        });
+    }, [navigation, menuVisible]);
 
 
     const sendMessage = () => {
