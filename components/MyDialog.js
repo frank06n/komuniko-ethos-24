@@ -10,7 +10,6 @@ const createStyles = (theme) => StyleSheet.create({
         marginBottom: 24
     },
     button: {
-        fontSize: 32,
         alignItems: 'flex-start',
         paddingHorizontal: 32,
     },

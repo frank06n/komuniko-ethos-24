@@ -77,7 +77,6 @@ const AllChatsScreen = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchBarVisible, setSearchBarVisible] = useState(false);
     const [filteredData, setFilteredData] = useState(currChats);
-    const [myDialogVisible, setMyDialogVisible] = useState(false);
 
     const myDialog = useRef(null);
 
@@ -103,7 +102,7 @@ const AllChatsScreen = ({ navigation }) => {
             headerRight: () => (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <IconButton
-                        icon={searchBarVisible ? 'menu-up-outline' : 'magnify'}
+                        icon={searchBarVisible ? 'close' : 'magnify'}
                         size={24}
                         onPress={toggleSearchBarVisibility}
                     />
