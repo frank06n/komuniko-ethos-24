@@ -45,7 +45,7 @@ const MessageItem = ({ message, isGroup, currentUser, users }) => {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        marginVertical: 8,
+        marginVertical: 6,
         paddingHorizontal: 8,
     },
     avatar: {

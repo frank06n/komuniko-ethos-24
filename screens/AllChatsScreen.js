@@ -101,7 +101,6 @@ const AllChatsScreen = ({ navigation }) => {
 
     return (
         <FlatList
-            style={styles.chatsList}
             data={currChats}
             keyExtractor={item => item.unique_id}
             renderItem={({ item }) => renderListItem(item, navigation)}

@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import { View, ScrollView, TextInput, StyleSheet } from 'react-native';
-import { Avatar, Text, Button, Menu, IconButton } from 'react-native-paper';
+import React, { useState, useRef } from 'react';
+import { View, TextInput, StyleSheet, FlatList } from 'react-native';
+import { Avatar, Button, Menu, IconButton } from 'react-native-paper';
 import { getGroupChat, getPersonalChatPair, getUserData } from '../test_util/ProvideData';
 import MessageItem from '../components/MessageItem';
-import { useNavigation } from '@react-navigation/native';
 
 const ChatScreen = ({ navigation, route }) => {
     const { type, unique_id, currUserId, displayname, profilepic } = route.params;
 
     const isGroup = type === 'GROUP';
     const chatData = isGroup ? getGroupChat(unique_id) : getPersonalChatPair(unique_id);
-    let lastMessageId = chatData.messages[chatData.messages.length - 1].message_id;
 
     const usersData = {}
     if (isGroup) {
@@ -18,8 +16,12 @@ const ChatScreen = ({ navigation, route }) => {
             usersData[id] = getUserData(id);
         }
     }
-    const [messages, setMessages] = useState(chatData.messages || []);
+    const [messages, setMessages] = useState([...chatData.messages].reverse() || []);
     const [newMessage, setNewMessage] = useState('');
+
+
+
+    const lastMessageId = messages[0].message_id;
 
     const [menuVisible, setMenuVisible] = useState(false);
 
@@ -58,26 +60,30 @@ const ChatScreen = ({ navigation, route }) => {
         });
     }, [navigation, menuVisible]);
 
+    const flatListRef = useRef(null);
 
     const sendMessage = () => {
-        lastMessageId += 1;
-        setMessages([...messages, {
-            "message_id": lastMessageId,
+        setMessages([{
+            "message_id": lastMessageId + 1,
             "text_content": newMessage,
             "sender": currUserId,
             "timestamp": new Date().toISOString()
-        }]);
+        }, ...messages]);
 
         setNewMessage('');
     };
 
+
     return (
         <View style={styles.container}>
-            <ScrollView style={styles.messagesContainer}>
-                {messages.map((msg) =>
-                    <MessageItem message={msg} isGroup={isGroup} currentUser={currUserId} users={usersData} />
-                )}
-            </ScrollView>
+            <FlatList
+                inverted
+                data={messages}
+                keyExtractor={msg => msg.message_id}
+                ref={flatListRef}
+                renderItem={({ item }) => <MessageItem message={item} isGroup={isGroup} currentUser={currUserId} users={usersData} />}
+                onContentSizeChange={() => flatListRef.current.scrollToIndex({ index: 0, animated: true })}
+            />
             <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
