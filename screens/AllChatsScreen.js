@@ -1,7 +1,8 @@
-import React, { useState, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useLayoutEffect, useCallback, useRef } from 'react';
 import { View, TextInput, FlatList, StyleSheet } from 'react-native';
 import { Avatar, List, Text, FAB, Menu, IconButton } from 'react-native-paper';
 import { getUserData, getPersonalChatPairLastMessage, getGroupChatData } from '../test_util/ProvideData';
+import MyDialog from '../components/MyDialog';
 
 const currUserId = 0;
 const currUserData = getUserData(currUserId);
@@ -76,6 +77,9 @@ const AllChatsScreen = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchBarVisible, setSearchBarVisible] = useState(false);
     const [filteredData, setFilteredData] = useState(currChats);
+    const [myDialogVisible, setMyDialogVisible] = useState(false);
+
+    const myDialog = useRef(null);
 
     const renderListItemCallback = useCallback(renderListItem, [filteredData, navigation]);
 
@@ -140,10 +144,12 @@ const AllChatsScreen = ({ navigation }) => {
             <FAB
                 icon="chat-plus-outline"
                 style={styles.fab}
-                onPress={() => console.log('Pressed')}
+                onPress={() => myDialog.current.showDialog()}
                 accessible={true}
                 accessibilityLabel="Start new chat"
             />
+            <MyDialog
+                ref={myDialog} />
         </View>
     );
 };
