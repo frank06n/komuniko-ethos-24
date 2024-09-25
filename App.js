@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AllChatsScreen from './screens/AllChatsScreen';
 import ChatScreen from './screens/ChatScreen';
+import UserInfoScreen from "./screens/UserInfoScreen";
 import { Provider as PaperProvider } from 'react-native-paper';
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -39,6 +40,7 @@ function ChatStack() {
         <Stack.Navigator initialRouteName="AllChats">
             <Stack.Screen name="AllChats" component={AllChatsScreen} options={{ title: 'Chats' }} />
             <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({ title: route.params.name })} />
+            <Stack.Screen name="UserInfo" component={UserInfoScreen} />
         </Stack.Navigator>
     );
 }

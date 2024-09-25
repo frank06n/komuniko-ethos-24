@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Avatar, List, Text } from 'react-native-paper';
+import { Avatar, List, Button } from 'react-native-paper';
 import { getChatsList } from '../test_util/ProvideData';
-
-import { Button } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
@@ -19,6 +17,13 @@ const AllChatsScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <Button
+                mode="contained"
+                onPress={() => navigation.navigate('UserInfo')}
+                style={styles.userInfoButton}
+            >
+                User Info
+            </Button>
             <FlatList
                 style={styles.chatsList}
                 data={getChatsList()}
@@ -32,22 +37,28 @@ const AllChatsScreen = ({ navigation }) => {
                     />
                 )}
             />
-            <Button title="Logout" onPress={handleLogout} />
+            <Button
+                mode="contained" // Add this line
+                onPress={handleLogout} // Use the existing function for logout
+                style={styles.logoutButton} // Optional: Add custom styles for logout button
+            >
+                Logout
+            </Button>
         </View>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: { 
         flex: 1, 
         justifyContent: 'space-between' // Ensures the FlatList and button are spaced apart
     },
+    userInfoButton: {
+        margin: 16,
+    },
     chatsList: { 
         paddingHorizontal: 16 
     }
 });
-
-
 
 export default AllChatsScreen;
