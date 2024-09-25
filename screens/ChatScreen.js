@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { View, TextInput, StyleSheet, FlatList } from 'react-native';
-import { Avatar, Button, Menu, IconButton } from 'react-native-paper';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import { View, TextInput, StyleSheet, FlatList, BackHandler } from 'react-native';
+import { Avatar, Button, Menu, IconButton, Text } from 'react-native-paper';
 import { getGroupChat, getPersonalChatPair, getUserData } from '../test_util/ProvideData';
 import MessageItem from '../components/MessageItem';
 
@@ -19,8 +19,6 @@ const ChatScreen = ({ navigation, route }) => {
     const [messages, setMessages] = useState([...chatData.messages].reverse() || []);
     const [newMessage, setNewMessage] = useState('');
 
-
-
     const lastMessageId = messages[0].message_id;
 
     const [menuVisible, setMenuVisible] = useState(false);
@@ -28,37 +26,138 @@ const ChatScreen = ({ navigation, route }) => {
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            title: displayname,
-            headerLeft: () => (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [isSelecting, setIsSelecting] = useState(false); // Track if selection mode is active
+
+    // Toggle item selection
+    const handleMessageLongPress = (msg) => {
+        const m_id = msg.message_id;
+        setIsSelecting(true);
+
+        toggleSelectMessage(msg);
+    };
+    const handleMessagePress = (msg) => {
+        if (!isSelecting) return;
+        toggleSelectMessage(msg);
+    };
+    const toggleSelectMessage = (msg) => {
+        const m_id = msg.message_id;
+        if (selectedItems.length === 1 && selectedItems[0] === m_id) {
+            clearSelection();
+            return;
+        }
+        setSelectedItems((prev) =>
+            prev.includes(m_id)
+                ? prev.filter((id) => id !== m_id)
+                : [...prev, m_id]
+        );
+    }
+
+    // Reset selection
+    const clearSelection = () => {
+        setIsSelecting(false);
+        setSelectedItems([]);
+    };
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            () => {
+                if (isSelecting) {
+                    clearSelection();
+                    return true;
+                }
+                return false;
+            },
+        );
+        return () => backHandler.remove();
+    }, [isSelecting]);
+
+
+    // Update header options dynamically
+    useLayoutEffect(() => {
+        if (isSelecting) {
+            navigation.setOptions({
+                title: '',
+                headerRight: () => (
+                    <View style={{ flexDirection: 'row' }}>
+                        <IconButton
+                            icon="delete-outline"
+                            size={24}
+                            style={{ margin: 0, marginRight: 2 }}
+                            onPress={() => console.log('delete')}
+                        />
+
+                        <IconButton
+                            icon="pencil-outline"
+                            size={24}
+                            style={{ margin: 0, marginRight: 2 }}
+                            onPress={() => console.log('edit')}
+                        />
+                        <IconButton
+                            icon="share-variant-outline"
+                            size={24}
+                            style={{ margin: 0, marginRight: 2 }}
+                            onPress={() => console.log('share')}
+                        />
+                        <IconButton
+                            icon="information-outline"
+                            size={24}
+                            style={{ margin: 0, marginRight: 12 }}
+                            onPress={() => console.log('info')}
+                        />
+                    </View>
+                ),
+                headerLeft: () => (
                     <IconButton
-                        icon="arrow-left"
-                        size={24}
-                        style={{ margin: 0 }}
-                        onPress={() => navigation.goBack()}
+                        icon="close"
+                        size={28}
+                        style={{ margin: 0, marginLeft: 10, paddingRight: 5 }}
+                        onPress={clearSelection}
                     />
-                    <Avatar.Image
-                        size={40}
-                        source={{ uri: profilepic }} // Replace with your avatar URL
-                    />
-                </View>
-            ),
-            headerRight: () => (
-                <Menu
-                    visible={menuVisible}
-                    onDismiss={closeMenu}
-                    anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
-                    anchorPosition='bottom'
-                >
-                    <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Option 1" />
-                    <Menu.Item onPress={() => { /* Handle option 2 */ }} title="Option 2" />
-                    <Menu.Item onPress={() => { /* Handle option 3 */ }} title="Option 3" />
-                </Menu>
-            ),
-        });
-    }, [navigation, menuVisible]);
+                ),
+            });
+        } else {
+            navigation.setOptions({
+                title: displayname,
+                headerLeft: () => (
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <IconButton
+                            icon="arrow-left"
+                            size={24}
+                            style={{ margin: 0 }}
+                            onPress={() => navigation.goBack()}
+                        />
+                        <Avatar.Image
+                            size={40}
+                            source={{ uri: profilepic }} // Replace with your avatar URL
+                        />
+                    </View>
+                ),
+                headerRight: () => (
+                    <Menu
+                        visible={menuVisible}
+                        onDismiss={closeMenu}
+                        anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
+                        anchorPosition='bottom'
+                    >
+                        {!isGroup && (
+                            <Menu.Item onPress={() => { /* Handle option 1 */ }} title="View Profile" />
+                        )}
+                        {isGroup && (
+                            <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Group Details" />
+                        )}
+                        <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Clear Chat" />
+                        {isGroup && (
+                            <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Exit Group" />
+                        )}
+                    </Menu>
+                ),
+            });
+        }
+    }, [isSelecting, navigation, menuVisible]);
+
+
 
     const flatListRef = useRef(null);
 
@@ -81,7 +180,16 @@ const ChatScreen = ({ navigation, route }) => {
                 data={messages}
                 keyExtractor={msg => msg.message_id}
                 ref={flatListRef}
-                renderItem={({ item }) => <MessageItem message={item} isGroup={isGroup} currentUser={currUserId} users={usersData} />}
+                renderItem={({ item }) =>
+                (<MessageItem
+                    message={item}
+                    isGroup={isGroup}
+                    currentUser={currUserId}
+                    users={usersData}
+                    onPress={() => handleMessagePress(item)}
+                    onLongPress={() => handleMessageLongPress(item)}
+                    isSelected={selectedItems.includes(item.message_id)} />
+                )}
                 onContentSizeChange={() => flatListRef.current.scrollToIndex({ index: 0, animated: true })}
             />
             <View style={styles.inputContainer}>

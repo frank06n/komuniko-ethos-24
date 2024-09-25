@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Avatar, Text, useTheme } from 'react-native-paper';
 // import moment from 'moment'; // For formatting timestamps
 
@@ -12,33 +12,44 @@ const getDisplayTime = timestamp => {
 }
 
 
-const MessageItem = ({ message, isGroup, currentUser, users }) => {
+const MessageItem = ({ message, isGroup, currentUser, users, onPress, onLongPress, isSelected }) => {
     const { message_id, text_content, sender, timestamp } = message;
     const isCurrentUser = sender === currentUser;
     const senderInfo = users[sender]; // Assuming users contain an array with user info
     // const theme = useTheme(); // Use theme for colors if needed
 
     return (
-        <View style={[
-            styles.container,
-            isCurrentUser ? styles.myMessageContainer : styles.otherMessageContainer
-        ]}>
-            {!isCurrentUser && isGroup && (
-                <Avatar.Image style={styles.avatar} size={32} source={{ uri: senderInfo.profilepic }} />
-            )}
-
-            <View style={[
-                styles.messageBubble,
-                isCurrentUser ? styles.myMessage : styles.otherMessage
-            ]}>
+        <TouchableOpacity
+            activeOpacity={0.8}
+            style={{
+                backgroundColor: isSelected ? '#d0d0df' : 'transparent'
+            }}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            delayLongPress={100}>
+            <View
+                style={[
+                    styles.container,
+                    isCurrentUser ? styles.myMessageContainer : styles.otherMessageContainer
+                ]}
+            >
                 {!isCurrentUser && isGroup && (
-                    <Text style={styles.username}>{senderInfo.username}</Text>
+                    <Avatar.Image style={styles.avatar} size={32} source={{ uri: senderInfo.profilepic }} />
                 )}
-                <Text style={styles.messageText}>{text_content}</Text>
-                {/* <Text style={styles.timestamp}>{moment(timestamp).fromNow()}</Text> */}
-                <Text style={styles.timestamp}>{getDisplayTime(timestamp)}</Text>
+
+                <View style={[
+                    styles.messageBubble,
+                    isCurrentUser ? styles.myMessage : styles.otherMessage
+                ]}>
+                    {!isCurrentUser && isGroup && (
+                        <Text style={styles.username}>{senderInfo.username}</Text>
+                    )}
+                    <Text style={styles.messageText}>{text_content}</Text>
+                    {/* <Text style={styles.timestamp}>{moment(timestamp).fromNow()}</Text> */}
+                    <Text style={styles.timestamp}>{getDisplayTime(timestamp)}</Text>
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
