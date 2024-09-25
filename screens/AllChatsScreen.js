@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import { Avatar, List, Text, Button, Menu, IconButton } from 'react-native-paper';
+import { View, TextInput, FlatList, StyleSheet } from 'react-native';
+import { Avatar, List, Text, FAB, Menu, IconButton } from 'react-native-paper';
 import { getUserData, getPersonalChatPairLastMessage, getGroupChatData } from '../test_util/ProvideData';
 
 const currUserId = 0;
@@ -78,6 +78,20 @@ const renderListItem = (item, navigation) => {
 const AllChatsScreen = ({ navigation }) => {
 
     const [menuVisible, setMenuVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchBarVisible, setSearchBarVisible] = useState(false);
+    const [filteredData, setFilteredData] = useState(currChats);
+
+    const handleSearch = (text) => {
+        setSearchQuery(text);
+
+        // Filter data based on the search input
+        const filteredList = currChats.filter((item) =>
+            item.displayname.toLowerCase().includes(text.toLowerCase())
+        );
+
+        setFilteredData(filteredList);
+    };
 
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
@@ -85,26 +99,51 @@ const AllChatsScreen = ({ navigation }) => {
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <Menu
-                    visible={menuVisible}
-                    onDismiss={closeMenu}
-                    anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
-                    anchorPosition='bottom'
-                >
-                    <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Option 1" />
-                    <Menu.Item onPress={() => { /* Handle option 2 */ }} title="Option 2" />
-                    <Menu.Item onPress={() => { /* Handle option 3 */ }} title="Option 3" />
-                </Menu>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <IconButton
+                        icon={searchBarVisible ? "menu-up-outline" : "magnify-expand"}
+                        size={24}
+                        style={{ margin: 0 }}
+                        onPress={() => setSearchBarVisible(!searchBarVisible)}
+                    />
+                    <Menu
+                        visible={menuVisible}
+                        onDismiss={closeMenu}
+                        anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
+                        anchorPosition='bottom'
+                    >
+                        <Menu.Item onPress={() => { /* Handle option 1 */ }} title="Edit Profile" />
+                        <Menu.Item onPress={() => { /* Handle option 2 */ }} title="Settings" />
+                        <Menu.Item onPress={() => { /* Handle option 3 */ }} title="Log out" />
+                    </Menu>
+                </View>
+
             ),
         });
-    }, [navigation, menuVisible]);
+    }, [navigation, menuVisible, searchBarVisible]);
+
+
 
     return (
-        <FlatList
-            data={currChats}
-            keyExtractor={item => item.unique_id}
-            renderItem={({ item }) => renderListItem(item, navigation)}
-        />
+        <View style={styles.container}>
+            {searchBarVisible && <TextInput
+                style={styles.input}
+                value={searchQuery}
+                onChangeText={handleSearch}
+                placeholder="Type a message"
+            />}
+            <FlatList
+                data={filteredData}
+                keyExtractor={item => item.unique_id}
+                renderItem={({ item }) => renderListItem(item, navigation)}
+            />
+            <FAB
+                icon="chat-plus-outline"
+                style={styles.fab}
+                onPress={() => console.log('Pressed')}
+            />
+        </View>
+
     );
 };
 
@@ -125,7 +164,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: 'gray',
     },
-    listItem: { paddingLeft: 16 }
+    listItem: { paddingLeft: 16 },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+    },
+
+    input: { margin: 10, backgroundColor: 'white', padding: 8, borderRadius: 5 },
 });
 
 
