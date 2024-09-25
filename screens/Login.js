@@ -1,39 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, Button, TextInput, Image, SafeAreaView, TouchableOpacity, StatusBar, Alert } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
+import { AuthenticatedUserContext } from "../App";
+
 const backImage = require("../assets/backImage.png");
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { setUser } = useContext(AuthenticatedUserContext);
   
-    // const onHandleLogin = () => {
-    //   if (email !== "" && password !== "") {
-    //     signInWithEmailAndPassword(auth, email, password)
-    //       .then(() => console.log("Login success"))
-    //       .catch((err) => Alert.alert("Login error", err.message));
-    //   }
-    // };
     const onHandleLogin = () => {
         if (email !== "" && password !== "") {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    console.log(user); // Check the user object here
+    
                     if (user.emailVerified) {
                         console.log("Login success, email is verified");
-                        //navigation.navigate("Chat");
+                        setUser(user);
                     } else {
                         Alert.alert(
                             "Email not verified",
                             "Please verify your email before logging in."
                         );
-                        user.sendEmailVerification()
-                            .then(() => {
-                                Alert.alert("Verification email sent", "Please check your inbox.");
-                            })
-                            .catch((err) => console.error("Error sending verification email", err));
                     }
                 })
                 .catch((err) => Alert.alert("Login error", err.message));
@@ -42,9 +33,6 @@ export default function Login({ navigation }) {
     
     
     
-      
-      
-
     return (
         <View style={styles.container}>
             <Image source={backImage} style={styles.backImage} />

@@ -7,25 +7,6 @@ import { Button } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
-// const AllChatsScreen = ({ navigation }) => {
-//     return (
-//         <FlatList
-//             style={styles.chatsList}
-//             data={getChatsList()}
-//             keyExtractor={item => item.id}
-//             renderItem={({ item }) => (
-//                 <List.Item
-//                     title={item.name}
-//                     description={item.lastMessage}
-//                     left={() => <Avatar.Image size={48} source={{ uri: item.avatar }} />}
-//                     onPress={() => navigation.navigate('Chat', { name: item.name })}
-//                 />
-//             )}
-//         />
-//     );
-// };
-
-
 const AllChatsScreen = ({ navigation }) => {
     const handleLogout = () => {
         signOut(auth)
