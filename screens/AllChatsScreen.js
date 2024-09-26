@@ -102,7 +102,7 @@ const AllChatsScreen = ({ navigation }) => {
     const Logout = () => {
         signOut(auth)
             .then(() => navigation.replace('Login'))
-            .catch((error) => Alert.alert('Logout error', error));
+            .catch((error) => Alert.alert('Logout error', error.message));
     };
 
     useLayoutEffect(() => {

@@ -2,24 +2,21 @@ import { auth, db } from '../config/firebase';// Ensure this is correctly export
 import { ref, set, onValue } from 'firebase/database';
 
 
-export function OnAuthStateChangedGetData(getRefPath, onRetrieveData, onError, onNoUserFound) {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-        if (user) {
-            const userRef = ref(db, getRefPath(user));
+// export function OnAuthStateChangedGetData(getRefPath, onRetrieveData, onError, onNoUserFound) {
+//     return auth.onAuthStateChanged(user => {
+//         if (user) {
+//             const userRef = ref(db, getRefPath(user));
 
-            // Retrieve user info when the component mounts
-            onValue(userRef, (snapshot) => {
-                const data = snapshot.val();
-                onRetrieveData(data);
-            }, onError);
-        } else {
-            onError('User not signed in');
-        }
-    });
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-}
+//             // Retrieve user info when the component mounts
+//             onValue(userRef, (snapshot) => {
+//                 const data = snapshot.val();
+//                 onRetrieveData(data);
+//             }, onError);
+//         } else {
+//             onError('User not signed in');
+//         }
+//     });
+// }
 
 
 export async function SubmitData(username, name, bio, onSuccess, onError) {
