@@ -1,18 +1,16 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Alert } from 'react-native';
 import { Avatar, List, Button } from 'react-native-paper';
 import { getChatsList } from '../test_util/ProvideData';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
 const AllChatsScreen = ({ navigation }) => {
-    const handleLogout = () => {
+
+    const Logout = () => {
         signOut(auth)
-            .then(() => {
-                console.log('User logged out');
-                navigation.replace('Login'); // Redirect to Login screen after logout
-            })
-            .catch((error) => console.log('Logout error', error));
+            .then(() => navigation.replace('Login'))
+            .catch((error) => Alert.alert('Logout error', error));
     };
 
     return (
@@ -39,7 +37,7 @@ const AllChatsScreen = ({ navigation }) => {
             />
             <Button
                 mode="contained" // Add this line
-                onPress={handleLogout} // Use the existing function for logout
+                onPress={Logout} // Use the existing function for logout
                 style={styles.logoutButton} // Optional: Add custom styles for logout button
             >
                 Logout
@@ -49,15 +47,15 @@ const AllChatsScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { 
-        flex: 1, 
+    container: {
+        flex: 1,
         justifyContent: 'space-between' // Ensures the FlatList and button are spaced apart
     },
     userInfoButton: {
         margin: 16,
     },
-    chatsList: { 
-        paddingHorizontal: 16 
+    chatsList: {
+        paddingHorizontal: 16
     }
 });
 
