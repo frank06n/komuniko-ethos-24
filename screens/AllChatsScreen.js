@@ -3,6 +3,8 @@ import { View, TextInput, FlatList, StyleSheet } from 'react-native';
 import { Avatar, List, Text, FAB, Menu, IconButton } from 'react-native-paper';
 import { getUserData, getPersonalChatPairLastMessage, getGroupChatData } from '../test_util/ProvideData';
 import MyDialog from '../components/MyDialog';
+import { signOut } from 'firebase/auth';
+import { auth } from '../config/firebase';
 
 const currUserId = 0;
 const currUserData = getUserData(currUserId);
@@ -97,6 +99,12 @@ const AllChatsScreen = ({ navigation }) => {
         setSearchBarVisible(!searchBarVisible);
     };
 
+    const Logout = () => {
+        signOut(auth)
+            .then(() => navigation.replace('Login'))
+            .catch((error) => Alert.alert('Logout error', error.message));
+    };
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -112,9 +120,9 @@ const AllChatsScreen = ({ navigation }) => {
                         anchorPosition='bottom'
                         anchor={<IconButton icon="dots-vertical" onPress={() => setMenuVisible(true)} />}
                     >
-                        <Menu.Item onPress={() => { /* Handle Edit Profile */ }} title="Edit Profile" />
+                        <Menu.Item onPress={() => navigation.navigate('UserInfo')} title="Edit Profile" />
                         <Menu.Item onPress={() => { /* Handle Settings */ }} title="Settings" />
-                        <Menu.Item onPress={() => { /* Handle Log Out */ }} title="Log out" />
+                        <Menu.Item onPress={Logout} title="Log out" />
                     </Menu>
                 </View>
             ),
@@ -190,7 +198,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         padding: 8,
         borderRadius: 5
-    },
+    }
 });
 
 export default AllChatsScreen;
