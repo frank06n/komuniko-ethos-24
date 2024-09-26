@@ -35,16 +35,8 @@ function AuthStack() {
 function ChatStack() {
     return (
         <Stack.Navigator initialRouteName="AllChats">
-            <Stack.Screen
-                name="AllChats"
-                component={AllChatsScreen}
-                options={{ title: 'Chats' }}
-            />
-            <Stack.Screen
-                name="Chat"
-                component={ChatScreen}
-                options={({ route }) => ({ title: route.params.name })}
-            />
+            <Stack.Screen name="AllChats" component={AllChatsScreen} options={{ title: 'Chats' }} />
+            <Stack.Screen name="Chat" component={ChatScreen} />
             <Stack.Screen name="UserInfo" component={UserInfoScreen} />
         </Stack.Navigator>
     );
