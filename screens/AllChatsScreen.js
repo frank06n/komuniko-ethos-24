@@ -122,7 +122,7 @@ const AllChatsScreen = ({ navigation }) => {
                     >
                         <Menu.Item onPress={() => {
                             setMenuVisible(false);
-                            navigation.navigate('UserInfo');
+                            navigation.navigate('ViewProfile');
                         }} title="Edit Profile" />
                         <Menu.Item onPress={() => { /* Handle Settings */ }} title="Settings" />
                         <Menu.Item onPress={Logout} title="Log out" />

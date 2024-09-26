@@ -11,7 +11,6 @@ import { auth, firestore } from './config/firebase';
 // Screens
 import AllChatsScreen from './screens/AllChatsScreen';
 import ChatScreen from './screens/ChatScreen';
-import UserInfoScreen from "./screens/UserInfoScreen";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 
@@ -19,6 +18,7 @@ import Signup from "./screens/Signup";
 import { AuthenticatedUserProvider, AuthenticatedUserContext } from './context/AuthContext';
 import CreateUserScreen from "./screens/CreateUserScreen";
 import { doc, getDoc } from "firebase/firestore";
+import ViewProfileScreen from "./screens/ViewProfileScreen";
 
 // Create Stack Navigator
 const Stack = createStackNavigator();
@@ -48,7 +48,7 @@ function ChatStack() {
         <Stack.Navigator initialRouteName="AllChats">
             <Stack.Screen name="AllChats" component={AllChatsScreen} options={{ title: 'Chats' }} />
             <Stack.Screen name="Chat" component={ChatScreen} />
-            <Stack.Screen name="UserInfo" component={UserInfoScreen} />
+            <Stack.Screen name="ViewProfile" component={ViewProfileScreen} />
         </Stack.Navigator>
     );
 }
