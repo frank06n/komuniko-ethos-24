@@ -1,74 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Button, Alert } from 'react-native';
-import { auth, db } from '../config/firebase';// Ensure this is correctly exporting your initialized db
+import { auth, db } from '../config/firebase'; // Ensure firebase is properly configured
 import { ref, onValue } from 'firebase/database';
 import { SubmitData } from '../utils/firebaseHelper';
 
 const UserInfoScreen = () => {
-    const [username, setUsername] = useState('');
-    const [name, setName] = useState('');
-    const [bio, setBio] = useState('');
+    const [userInfo, setUserInfo] = useState({ username: '', name: '', bio: '' });
+    const [loading, setLoading] = useState(false);
 
-    const getRefPath = (user) => {
-        return `users/${user.uid}`;
-    }
+    const getRefPath = user => `users/${user.uid}`;
 
-    const onRetrieveData = (data) => {
-        if (data) {
-            setUsername(data.username || '');
-            setName(data.name || '');
-            setBio(data.bio || '');
-        }
-        else {
-            console.log('data is undefined/null');
-        }
-    }
+    const onRetrieveData = (data = {}) => {
+        setUserInfo({
+            username: data.username || '',
+            name: data.name || '',
+            bio: data.bio || ''
+        });
+    };
+
+    const onError = (error) => {
+        console.error(error.message || error);
+        Alert.alert('Error', error.message);
+    };
+
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
                 const userRef = ref(db, getRefPath(user));
-
-                // Retrieve user info when the component mounts
-                onValue(userRef, (snapshot) => {
-                    const data = snapshot.val();
-                    onRetrieveData(data);
-                }, onError);
+                onValue(userRef, snapshot => onRetrieveData(snapshot.val()), onError);
             } else {
                 onError('User not signed in');
             }
         });
 
-        // Cleanup subscription on unmount
         return () => unsubscribe();
     }, [auth]);
 
     const handleSubmit = async () => {
-        console.log('function called');
-        await SubmitData(username, name, bio,
-            success => Alert.alert('Success', success),
-            error => Alert.alert('Error', error));
-        console.log('submit data done');
+        const { username, name, bio } = userInfo;
+
+        if (!username || !name || !bio) {
+            Alert.alert('Error', 'All fields are required');
+            return;
+        }
+
+        setLoading(true);
+        await SubmitData(
+            username,
+            name,
+            bio,
+            success => {
+                Alert.alert('Success', success);
+                setLoading(false);
+            },
+            error => {
+                Alert.alert('Error', error);
+                setLoading(false);
+            }
+        );
     };
 
     return (
         <View>
             <TextInput
                 placeholder="Username"
-                value={username}
-                onChangeText={setUsername}
+                value={userInfo.username}
+                onChangeText={text => setUserInfo({ ...userInfo, username: text })}
             />
             <TextInput
                 placeholder="Name"
-                value={name}
-                onChangeText={setName}
+                value={userInfo.name}
+                onChangeText={text => setUserInfo({ ...userInfo, name: text })}
             />
             <TextInput
                 placeholder="Bio"
-                value={bio}
-                onChangeText={setBio}
+                value={userInfo.bio}
+                onChangeText={text => setUserInfo({ ...userInfo, bio: text })}
             />
-            <Button title="Submit" onPress={handleSubmit} />
+            <Button title="Submit" onPress={handleSubmit} disabled={loading} />
         </View>
     );
 };
