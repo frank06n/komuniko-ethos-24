@@ -1,55 +1,66 @@
-## Komuniko - Group Chat for Planning and Touring  
-### Ethos 2024 Hackathon Submission
+# Komuniko - Secure Communications App
 
-**Komuniko** is a group chat app designed to simplify and streamline the planning, execution, and post-discussion of group tours. With a focus on secure communication and collaboration, it provides a seamless experience across multiple phases of a trip.
+![Komuniko](https://via.placeholder.com/600x300.png)  
+*Bridging secure messaging across platforms*
 
----
+## 🌐 About Komuniko
+Komuniko is a cross-platform secure communications app designed to prioritize **privacy** and **security** in messaging. Whether you're communicating on **desktop**, **Android**, or **iOS**, Komuniko ensures end-to-end encrypted messaging, secure file sharing, and multi-factor authentication, bringing cutting-edge communication capabilities to users.
 
-### Problem Statement:
-Develop a secure communications app for messaging, voice, and video across desktop, Android, and iOS platforms, incorporating advanced encryption, message expiration, secure file sharing, and multi-factor authentication (MFA).
-
----
-
-### Key Features:
-
-#### **1. Planning Phase:**
-- **Common Date/Time Finder:** Collects available times from all members and suggests an optimal schedule.
-- **Venue Picker:** Members suggest and vote on venues with integrations for reviews, travel time, and more.
-- **Budget Decider:** Facilitates collaborative budgeting with real-time cost splits and tracking.
+### 🚀 Features
+- **End-to-End Encrypted Messaging**: Powered by **Libsignal**, every message you send is protected from unauthorized access.
+- **Cross-Platform**: Seamless functionality across **Android**, **iOS**, and **Desktop** environments.
+- **Secure File Sharing**: Share files with peace of mind, knowing they are encrypted and protected.
+- **Message Expiration**: Set messages to expire, ensuring sensitive information is not stored indefinitely.
+- **Multi-Factor Authentication (MFA)**: Adds an extra layer of security for user authentication.
   
-#### **2. Touring Phase:**
-- **Live Location Sharing:** Real-time location updates to easily locate group members, with proximity alerts.
-- **Payment Sharing:** Track and split expenses during the tour with potential integration for payments.
-- **Location-based Photo Timeline:** Photos are tagged with location data, creating a map-based timeline.
+### 🛠️ Tech Stack
+- **Frontend**: [React Native](https://reactnative.dev/) with **Expo**
+- **UI Library**: [React Native Paper](https://callstack.github.io/react-native-paper/)
+- **Backend**: [Firebase](https://firebase.google.com/) (Authentication, Database, Storage)
+- **Encryption Protocol**: [Libsignal](https://signal.org/docs/)
 
-#### **3. After-Tour Discussion Phase:**
-- **Tour Review & Feedback:** Members review the trip, venues, and expenses for future planning.
-- **Final Expense Settlement:** Easy reconciliation of expenses after the tour.
-- **Memories Recap:** Automatically generate a timeline of key moments from the tour.
+![Komuniko Interface](https://via.placeholder.com/800x400.png)
+
+### 🏗️ Architecture Overview
+Komuniko is designed with a focus on **security** and **scalability**. Here's an overview of the key components:
+
+1. **React Native with Expo**: Streamlined cross-platform development for Android, iOS, and desktop.
+2. **Firebase Integration**: Provides real-time database, secure file storage, and user authentication with MFA.
+3. **Libsignal Protocol**: Industry-standard end-to-end encryption to safeguard communications.
+
+![Architecture](https://via.placeholder.com/800x400.png)
+
+### 🔒 Security Features
+- **End-to-End Encryption**: Messages are encrypted using the robust Libsignal protocol, ensuring only the intended recipient can decrypt them.
+- **Message Expiration**: Set messages to self-destruct after a defined period.
+- **Multi-Factor Authentication (MFA)**: Increases security by requiring multiple forms of verification.
+- **Secure File Sharing**: All files are encrypted before being shared over the network.
+
+### 📄 POC Submission
+Komuniko's **Proof of Concept** includes:
+- A functional secure messaging system with Libsignal encryption.
+- Basic user interface using React Native Paper.
+- Firebase as the backend for authentication and secure data storage.
+  
+### ⚙️ Getting Started
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/your-username/komuniko.git
+   cd komuniko
+   ```
+2. Install dependencies:  
+   ```bash
+   npm install
+   ```
+3. Run the project (with Expo):  
+   ```bash
+   expo start
+   ```
+
+### 📚 Documentation
+- [Libsignal Documentation](https://signal.org/docs/)
+- [Firebase Documentation](https://firebase.google.com/docs/)
 
 ---
 
-### Security Features:
-- **End-to-End Encryption:** Utilizes secure protocols (Matrix, Signal) to protect all communications.
-- **Message Expiration:** Automatically deletes messages after a specified time.
-- **Multi-Factor Authentication (MFA):** Provides an additional layer of security.
-- **Secure File Sharing:** Ensures all shared files are encrypted and securely transmitted.
-
----
-
-### Submission Plan:
-1. **POC Submission:**
-   - Basic encrypted messaging on multiple platforms.
-   - Implement secure communication protocols (Matrix, Signal).
-   - Demonstrate secure, encrypted messaging functionality.
-
-2. **Document Submission:**
-   - Software architecture plan with encryption protocols and message flow diagrams.
-   - Roadmap for advanced security features (MFA, message expiration, secure file sharing).
-   - UI/UX design mockups integrating security with usability. 
-
---- 
-
-### Next Steps:
-- Build out advanced security features, improve the UX, and extend platform support.
-
+**Komuniko** is our entry for the **Ethos Hackathon 2024**. Join us in pushing the boundaries of **secure communications**!
