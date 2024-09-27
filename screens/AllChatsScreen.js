@@ -120,7 +120,10 @@ const AllChatsScreen = ({ navigation }) => {
                         anchorPosition='bottom'
                         anchor={<IconButton icon="dots-vertical" onPress={() => setMenuVisible(true)} />}
                     >
-                        <Menu.Item onPress={() => navigation.navigate('UserInfo')} title="Edit Profile" />
+                        <Menu.Item onPress={() => {
+                            setMenuVisible(false);
+                            navigation.navigate('ViewProfile');
+                        }} title="Edit Profile" />
                         <Menu.Item onPress={() => { /* Handle Settings */ }} title="Settings" />
                         <Menu.Item onPress={Logout} title="Log out" />
                     </Menu>

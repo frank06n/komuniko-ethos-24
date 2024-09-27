@@ -1,6 +1,6 @@
 # Komuniko - Secure Communications App
 
-![Komuniko](https://via.placeholder.com/600x300.png)  
+![Komuniko](https://i.ibb.co/BCrFPDx/Untitled.png)  
 *Bridging secure messaging across platforms*
 
 ## 🌐 About Komuniko
@@ -19,7 +19,7 @@ Komuniko is a cross-platform secure communications app designed to prioritize **
 - **Backend**: [Firebase](https://firebase.google.com/) (Authentication, Database, Storage)
 - **Encryption Protocol**: [Libsignal](https://signal.org/docs/)
 
-![Komuniko Interface](https://via.placeholder.com/800x400.png)
+![Komuniko Interface](https://i.ibb.co/VgXskDt/Untitled2.png)
 
 ### 🏗️ Architecture Overview
 Komuniko is designed with a focus on **security** and **scalability**. Here's an overview of the key components:
@@ -28,7 +28,7 @@ Komuniko is designed with a focus on **security** and **scalability**. Here's an
 2. **Firebase Integration**: Provides real-time database, secure file storage, and user authentication with MFA.
 3. **Libsignal Protocol**: Industry-standard end-to-end encryption to safeguard communications.
 
-![Architecture](https://via.placeholder.com/800x400.png)
+![Architecture](https://i.ibb.co/2MZmmQb/Untitled3.png)
 
 ### 🔒 Security Features
 - **End-to-End Encryption**: Messages are encrypted using the robust Libsignal protocol, ensuring only the intended recipient can decrypt them.
@@ -45,7 +45,7 @@ Komuniko's **Proof of Concept** includes:
 ### ⚙️ Getting Started
 1. Clone the repository:  
    ```bash
-   git clone https://github.com/your-username/komuniko.git
+   git clone https://github.com/frank06n/komuniko-ethos-24
    cd komuniko
    ```
 2. Install dependencies:  
