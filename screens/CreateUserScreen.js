@@ -73,6 +73,8 @@ const CreateUserScreen = ({ navigation }) => {
             const profileData = {
                 username: username,
                 profilePic: imageUrl,
+                personalChats: {},
+                groupChats: []
             };
 
             // Set the document with the specified fields

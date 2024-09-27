@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, TextInput, FlatList, StyleSheet } from 'react-native';
-import { Button, Dialog, Portal, Text, withTheme } from 'react-native-paper';
+import { View, StyleSheet } from 'react-native';
+import { Button, Dialog, Portal, Text, TextInput, withTheme } from 'react-native-paper';
 
 
 const createStyles = (theme) => StyleSheet.create({
@@ -14,12 +14,11 @@ const createStyles = (theme) => StyleSheet.create({
         paddingHorizontal: 32,
     },
     input: {
-        marginTop: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        borderRadius: 10,
-        borderColor: theme.colors.primary,
-        borderWidth: 1,
+        backgroundColor: 'transparent'
+    },
+    foundText: {
+        color: theme.colors.primary,
+        padding: 4,
     }
 });
 
@@ -34,6 +33,7 @@ class MyDialog extends React.Component {
             visible: false,
             page: 0,
             username: '',
+            usernameFound: false,
         };
         this.showDialog = this.showDialog.bind(this);
         this.hideDialog = this.hideDialog.bind(this);
@@ -49,10 +49,12 @@ class MyDialog extends React.Component {
             visible: false,
             page: 0,
             username: '',
+            usernameFound: false,
         });
     }
     onUsernameTextChanged(text) {
-        this.setState({ username: text });
+        const found = text.toLowerCase() === 'shiela';
+        this.setState({ username: text, usernameFound: found });
     }
     setPage(page_id) {
         this.setState({ page: page_id });
@@ -83,15 +85,20 @@ class MyDialog extends React.Component {
                         (<Dialog.Content>
                             <TextInput
                                 style={this.styles.input}
-                                placeholder="Enter username"
+                                mode={'outlined'}
+                                label="Enter username"
                                 value={this.state.username}
                                 onChangeText={this.onUsernameTextChanged}
+
                             />
+                            {this.state.usernameFound &&
+                                <Text style={this.styles.foundText}>User found!</Text>
+                            }
                         </Dialog.Content>)
                     }
                     {this.state.page == 1 &&
                         (<Dialog.Actions>
-                            <Button onPress={this.hideDialog}>Go</Button>
+                            <Button onPress={this.hideDialog} disabled={!this.state.usernameFound}>Go</Button>
                             <Button onPress={this.hideDialog}>Cancel</Button>
                         </Dialog.Actions>)
                     }
